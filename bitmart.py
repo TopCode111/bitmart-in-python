@@ -52,8 +52,13 @@ class Bitmart:
             self.__get_access_token()
         data = {}
         for key in sorted(params.keys()):
-            data.update({key: params[key]})
+            if key == 'price' :
+                data.update({key: '{:.20f}'.format(params[key]).rstrip('0')})
+            else :
+                data.update({key: params[key]})
+
         url = urllib.parse.urlencode(data)
+        #print('Encoded URL:',url)
         sign = self.__create_sha256_signature(url)
         headers = {"X-BM-TIMESTAMP": str(int(time.time() * 1000)),
                    "X-BM-AUTHORIZATION": "Bearer {}".format(self.__access_token),
